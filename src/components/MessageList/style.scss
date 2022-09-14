@@ -1,0 +1,12 @@
+.message-window{
+  width: 500px;
+  height: 300px;
+
+  border: 1px solid #eee;
+  border-radius: 10px;
+  overflow-y: auto;
+}
+
+.chat-window {
+  display: block;
+}

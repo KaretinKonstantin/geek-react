@@ -1,57 +1,39 @@
-import { MessageList } from '../../schema'
+import { Chat } from '../../schema'
 import './style.scss'
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import React from 'react'
-import {Button} from "@material-ui/core";
-import {TextField} from "@material-ui/core";
-import { makeStyles } from '@material-ui/core/styles'
+import { Button, TextField } from '@mui/material'
+// import { makeStyles } from '@mui/material'
 
-const useStyles = makeStyles({
-    root: {
-        display: "flex",
-        flexDirection: "column",
-        maxWidth: "350px",
-        margin: "10px"
-    },
-    edit: {
-        marginBottom: "10px"
-    }
-})
 
-export const Message: React.FC = ({ ...props}) => {
+interface lProps {
+    messages: Chat[],
+    addMessage: (message: string, author: string, id: string) => void;
+}
 
-    const [messageCount, setMessageCount] = useState(0);
-    const [messageList, setMessageList] = useState<MessageList[]>([]);
+
+// const useStyles = makeStyles({
+//     root: {
+//         display: "flex",
+//         flexDirection: "column",
+//         maxWidth: "350px",
+//         margin: "10px"
+//     },
+//     edit: {
+//         marginBottom: "10px"
+//     }
+// })
+
+export const Message: React.FC<lProps> = ({messages, addMessage}) => {
     const inputRef = useRef(null);
-    const classes = useStyles();
-    const botTimers = useRef([]);
+    // const classes = useStyles();
     const [message, setMessage] = useState('');
     const [author, setAuthor] = useState('Guest');
 
     useEffect(() => {
-        if (messageList.length > 0
-            && messageList[messageList.length - 1].author !== 'Bot') {
-            const timerId = setTimeout(() => {
-                botTimers.current.shift();
-                addMessage('Bot', `Сообщение отправлено!`);
-            }, 1500);
-            return () => {
-                clearTimeout(timerId)
-            }
-        }
-    }, [messageList])
-
-    const addMessage = useCallback((author: string, message: string) => {
-        setMessageList(prevList => [...prevList, {
-            id: messageCount,
-            message: message,
-            author: author.trim() ? author : 'Anonymous'
-        }]);
-        setMessageCount(prev =>prev + 1);
-        setMessage("");
         // @ts-ignore
         inputRef.current.focus();
-    }, [messageCount]);
+    }, []);
 
     const handleMessage = (event: React.BaseSyntheticEvent) => {
         setMessage(event.target.value);
@@ -63,31 +45,27 @@ export const Message: React.FC = ({ ...props}) => {
 
     const formSubmit = (event: React.BaseSyntheticEvent) => {
         event.preventDefault();
-        addMessage(author, message);
+        // addMessage(message, author, id);
     }
 
     return (
-        <div className="">
-            <div className='message-window'>
-                {messageList.map((item) =>
+        <>
+            <div className="message-window">
+                {messages.map(item =>
                     <Fragment key={item.id}>
                         <div>Автор: {item.author}</div>
                         <pre>Сообщение: {item.message}</pre>
                     </Fragment>
                 )}
             </div>
-            <form action="#"
-                  onSubmit={formSubmit}
-                  className={classes.root}>
+            <form onSubmit={formSubmit}>
                 <TextField required
                            id="author"
                            label="Author"
-                           className={classes.edit}
                            value={author}
                            onChange={handleAuthor}/>
                 <TextField id="message"
                            label="Сообщение"
-                           className={classes.edit}
                            multiline
                            rows={1}
                            variant="outlined"
@@ -97,6 +75,6 @@ export const Message: React.FC = ({ ...props}) => {
                 <Button type="submit"
                         variant="contained">Отправить</Button>
             </form>
-        </div>
+        </>
     )
 }
