@@ -1,4 +1,5 @@
 export interface MessageList {
-    text: string,
+    id: number
+    message: string,
     author: string
 }
