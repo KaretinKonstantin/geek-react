@@ -1,13 +1,11 @@
 import './App.css'
-import { Message } from './components/MessageList/Message'
-import ChatList from './components/ChatList/index'
+import {Routes} from "./components/Routes";
 
 function App() {
 
     return (
         <div className="App">
-            <ChatList/>
-            <Message/>
+            <Routes/>
         </div>
     )
 }
